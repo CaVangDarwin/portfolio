@@ -1,0 +1,61 @@
+-- Project: Customer Segmentation Analysis
+
+-- Import necessary libraries
+USE bank_database;
+
+-- Task 1: Data Exploration
+-- 1.1 Get an overview of the customer table
+SELECT *
+FROM customers
+LIMIT 10;
+
+-- 1.2 Calculate the total number of customers
+SELECT COUNT(*) AS total_customers
+FROM customers;
+
+-- Task 2: Customer Segmentation
+-- 2.1 Segment customers based on their age groups
+SELECT
+    CASE
+        WHEN age <= 25 THEN '18-25'
+        WHEN age <= 35 THEN '26-35'
+        WHEN age <= 45 THEN '36-45'
+        WHEN age <= 55 THEN '46-55'
+        ELSE '55+'
+    END AS age_group,
+    COUNT(*) AS customer_count
+FROM customers
+GROUP BY age_group
+ORDER BY customer_count DESC;
+
+-- 2.2 Segment customers based on their account balances
+SELECT
+    CASE
+        WHEN balance < 1000 THEN 'Low'
+        WHEN balance < 10000 THEN 'Medium'
+        ELSE 'High'
+    END AS balance_group,
+    COUNT(*) AS customer_count
+FROM customers
+GROUP BY balance_group
+ORDER BY customer_count DESC;
+
+-- Task 3: Customer Behavior Analysis
+-- 3.1 Calculate the average transaction amount by gender
+SELECT
+    gender,
+    AVG(amount) AS avg_transaction_amount
+FROM transactions t
+JOIN customers c ON t.customer_id = c.customer_id
+GROUP BY gender;
+
+-- 3.2 Calculate the total transaction amount by month
+SELECT
+    DATE_TRUNC('month', transaction_date) AS transaction_month,
+    SUM(amount) AS total_transaction_amount
+FROM transactions
+GROUP BY transaction_month
+ORDER BY transaction_month;
+
+-- Task 4: Data Visualization
+
